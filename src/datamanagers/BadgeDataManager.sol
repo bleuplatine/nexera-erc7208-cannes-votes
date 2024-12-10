@@ -4,10 +4,10 @@ pragma solidity ^0.8.22;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IDataObject} from "../interfaces/IDataObject.sol";
 import {IDataIndex} from "../interfaces/IDataIndex.sol";
-import {IBadgeManager} from "../interfaces/IBadgeManager.sol";
+import {IBadgeDataManager} from "../interfaces/IBadgeDataManager.sol";
 import {DataPoint} from "../utils/DataPoints.sol";
 
-contract BadgeManager is IBadgeManager, AccessControl {
+contract BadgeDataManager is IBadgeDataManager, AccessControl {
     bytes32 public constant BADGE_ADMIN_ROLE = keccak256("BADGE_ADMIN_ROLE");
     
     IDataObject public immutable badgeStorage;
@@ -31,7 +31,7 @@ contract BadgeManager is IBadgeManager, AccessControl {
         dataIndex.write(
             address(badgeStorage),
             badgeDataPoint,
-            IBadgeManager.issueBadge.selector,
+            IBadgeDataManager.issueBadge.selector,
             abi.encode(recipient)
         );
     }
@@ -40,7 +40,7 @@ contract BadgeManager is IBadgeManager, AccessControl {
         bytes memory result = dataIndex.read(
             address(badgeStorage),
             badgeDataPoint,
-            IBadgeManager.getBadgeId.selector,
+            IBadgeDataManager.getBadgeId.selector,
             abi.encode(recipient)
         );
         return abi.decode(result, (uint256));

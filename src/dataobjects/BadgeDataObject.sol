@@ -4,7 +4,7 @@ pragma solidity ^0.8.22;
 import {IDataObject} from "../interfaces/IDataObject.sol";
 import {IDataIndex} from "../interfaces/IDataIndex.sol";
 import {IDataPointRegistry} from "../interfaces/IDataPointRegistry.sol";
-import {IBadgeManager} from "../interfaces/IBadgeManager.sol";
+import {IBadgeDataManager} from "../interfaces/IBadgeDataManager.sol";
 import {DataPoints, DataPoint} from "../utils/DataPoints.sol";
 import {ChainidTools} from "../utils/ChainidTools.sol";
 
@@ -29,15 +29,11 @@ contract BadgeDataObject is IDataObject {
         _;
     }
 
-    constructor() {
-        _badgeDPStorage[DataPoint.wrap(0)].nextBadgeId = 100; // Start at 101
-    }
-
     /// @inheritdoc IDataObject
     function read(DataPoint dp, bytes4 operation, bytes calldata data) external view returns (bytes memory) {
         BadgeDPStorage storage bdps = _badgeDPStorage[dp];
 
-        if (operation == IBadgeManager.getBadgeId.selector) {
+        if (operation == IBadgeDataManager.getBadgeId.selector) {
             address holder = abi.decode(data, (address));
             bytes32 diid = _diid(dp, holder);
             return abi.encode(bdps.badges[diid]);
@@ -54,7 +50,7 @@ contract BadgeDataObject is IDataObject {
     {
         BadgeDPStorage storage bdps = _badgeDPStorage[dp];
 
-        if (operation == IBadgeManager.issueBadge.selector) {
+        if (operation == IBadgeDataManager.issueBadge.selector) {
             address recipient = abi.decode(data, (address));
             bytes32 diid = _diid(dp, recipient);
 
